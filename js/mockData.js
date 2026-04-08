@@ -90,58 +90,14 @@ const MockData = {
     }
   ],
 
-  // Records for approval view — each has extractedFields for Review Readiness
+  // Records for approval view
   approvalRecords: [
-    {
-      id: 1, contactName: 'அRj', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: {
-        firstName: 'அRj', lastName: '', email: 'arj@example.com', phone: '+91 98765 43210', company: 'TechCorp'
-      },
-      existingData: {
-        firstName: '', lastName: '', email: '', phone: '', company: ''
-      }
-    },
-    {
-      id: 2, contactName: 'test', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: {
-        firstName: 'Anthony', lastName: "D'Silva", email: '', phone: '+91 22 6718 6718', company: 'Hansen Group'
-      },
-      existingData: {
-        firstName: 'Anthony', lastName: "D'Silva", email: '', phone: '+91 22 6718 6718', company: 'Hansen Group'
-      }
-    },
-    {
-      id: 3, contactName: 'car image', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: null,
-      existingData: { firstName: '', lastName: '', email: '', phone: '', company: '' }
-    },
-    {
-      id: 4, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: {
-        firstName: 'Sarah', lastName: 'Johnson', email: 'sarah.j@apexdigital.com', phone: '+1 415 555 0198', company: 'Apex Digital'
-      },
-      existingData: {
-        firstName: 'Sarah', lastName: 'Johnson', email: 'sarah@old-email.com', phone: '+1 415 555 0198', company: ''
-      }
-    },
-    {
-      id: 5, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: {
-        firstName: 'James', lastName: 'Lee', email: '', phone: '', company: 'Innovate Labs'
-      },
-      existingData: {
-        firstName: '', lastName: '', email: '', phone: '', company: ''
-      }
-    },
-    {
-      id: 6, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending',
-      extractedData: {
-        firstName: 'Maria', lastName: 'Gomez', email: 'maria@gomez.co', phone: '+52 55 1234 5678', company: 'Gomez Corp'
-      },
-      existingData: {
-        firstName: 'Maria', lastName: 'Gomez', email: 'maria@gomez.co', phone: '+52 55 1234 5678', company: 'Gomez Corp'
-      }
-    },
+    { id: 1, contactName: 'அRj', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending' },
+    { id: 2, contactName: 'test', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending' },
+    { id: 3, contactName: 'car image', email: '', phone: '', createdTime: 'Jan 7, 2026 17:54', owner: 'Vigneshwaran', status: 'pending' },
+    { id: 4, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending' },
+    { id: 5, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending' },
+    { id: 6, contactName: 'test', email: '', phone: '', createdTime: 'Dec 24, 2025 12:33', owner: 'Vigneshwaran', status: 'pending' },
   ],
 
   // Record detail for view/edit

@@ -5,7 +5,6 @@
 const ApprovalView = {
   selectedRecords: [],
   currentDetailRecord: null,
-  recordAnalysis: {},
 
   render() {
     const app = document.getElementById('app');
@@ -52,7 +51,6 @@ const ApprovalView = {
                 <th>Phone</th>
                 <th>Created Time</th>
                 <th>Contact Owner</th>
-                <th>Review Readiness</th>
               </tr>
             </thead>
             <tbody id="approvalTableBody">
@@ -71,9 +69,6 @@ const ApprovalView = {
                   <td>${record.phone || '—'}</td>
                   <td>${record.createdTime}</td>
                   <td>${record.owner}</td>
-                  <td class="readiness-cell" id="readiness-${record.id}">
-                    <span class="review-readiness analyzing"><span class="readiness-spinner"></span> Analyzing…</span>
-                  </td>
                 </tr>
               `).join('')}
             </tbody>
@@ -117,7 +112,6 @@ const ApprovalView = {
     `;
 
     this._bindEvents();
-    this._analyzeAllRecords();
   },
 
   _bindEvents() {
@@ -461,107 +455,5 @@ const ApprovalView = {
 
   _escapeAttr(text) {
     return text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  },
-
-  // ===== REVIEW READINESS =====
-  _analyzeAllRecords() {
-    MockData.approvalRecords.forEach(record => {
-      const delay = 600 + Math.random() * 1400;
-      setTimeout(() => {
-        const result = this._analyzeRecord(record);
-        this.recordAnalysis[record.id] = result;
-        this._renderReadinessBadge(record.id, result);
-      }, delay);
-    });
-  },
-
-  _analyzeRecord(record) {
-    const extracted = record.extractedData;
-    const existing = record.existingData;
-
-    if (!extracted || Object.keys(extracted).length === 0) {
-      return { status: 'no-data', matched: 0, mismatched: 0, newFields: 0, total: 0, details: [] };
-    }
-
-    let matched = 0, mismatched = 0, newFields = 0;
-    const details = [];
-    const fieldLabels = {
-      firstName: 'First Name', lastName: 'Last Name', email: 'Email',
-      phone: 'Phone', company: 'Company', mobile: 'Mobile',
-      website: 'Website', dateOfBirth: 'Date of Birth'
-    };
-
-    Object.keys(extracted).forEach(key => {
-      const extVal = (extracted[key] || '').trim();
-      const exVal = existing ? (existing[key] || '').trim() : '';
-      const label = fieldLabels[key] || key;
-
-      if (!extVal) return;
-
-      if (!exVal) {
-        newFields++;
-        details.push({ field: label, type: 'new', extracted: extVal, existing: '—' });
-      } else if (extVal.toLowerCase() === exVal.toLowerCase()) {
-        matched++;
-        details.push({ field: label, type: 'match', extracted: extVal, existing: exVal });
-      } else {
-        mismatched++;
-        details.push({ field: label, type: 'mismatch', extracted: extVal, existing: exVal });
-      }
-    });
-
-    const total = matched + mismatched + newFields;
-    const status = (mismatched > 0 || newFields > 0) ? 'needs-review' : 'up-to-date';
-    return { status, matched, mismatched, newFields, total, details };
-  },
-
-  _renderReadinessBadge(recordId, analysis) {
-    const cell = document.getElementById('readiness-' + recordId);
-    if (!cell) return;
-
-    let icon, label, cls, tooltipHtml;
-
-    if (analysis.status === 'needs-review') {
-      cls = 'needs-review';
-      icon = '<i class="fas fa-exclamation-circle"></i>';
-      const parts = [];
-      if (analysis.mismatched > 0) parts.push(analysis.mismatched + ' mismatched');
-      if (analysis.newFields > 0) parts.push(analysis.newFields + ' new');
-      label = 'Review Needed';
-      tooltipHtml = this._buildTooltip(analysis, 'Review Needed — ' + parts.join(', '));
-    } else if (analysis.status === 'up-to-date') {
-      cls = 'up-to-date';
-      icon = '<i class="fas fa-check-circle"></i>';
-      label = 'Up to Date';
-      tooltipHtml = this._buildTooltip(analysis, 'All extracted fields match');
-    } else {
-      cls = 'no-data';
-      icon = '<i class="fas fa-minus-circle"></i>';
-      label = 'No Data';
-      tooltipHtml = '<div class="readiness-tooltip"><div class="tip-title">No extractable data found in document</div></div>';
-    }
-
-    cell.innerHTML = '<span class="review-readiness ' + cls + '">' + icon + ' ' + label + tooltipHtml + '</span>';
-  },
-
-  _buildTooltip(analysis, title) {
-    let html = '<div class="readiness-tooltip">';
-    html += '<div class="tip-title">' + this._escapeHtml(title) + '</div>';
-
-    const order = ['mismatch', 'new', 'match'];
-    order.forEach(type => {
-      analysis.details.forEach(d => {
-        if (d.type !== type) return;
-        const dotCls = type === 'mismatch' ? 'mismatch' : type === 'new' ? 'new-data' : 'match';
-        let suffix = '';
-        if (type === 'mismatch') suffix = ' <span style="opacity:0.7">(' + this._escapeHtml(d.existing) + ' → ' + this._escapeHtml(d.extracted) + ')</span>';
-        else if (type === 'new') suffix = ' <span style="opacity:0.7">(' + this._escapeHtml(d.extracted) + ')</span>';
-        html += '<div class="tip-field"><span class="dot ' + dotCls + '"></span>' + this._escapeHtml(d.field) + suffix + '</div>';
-      });
-    });
-
-    html += '<div class="tip-stats">' + analysis.matched + ' matched · ' + analysis.mismatched + ' mismatched · ' + analysis.newFields + ' new</div>';
-    html += '</div>';
-    return html;
   }
 };
