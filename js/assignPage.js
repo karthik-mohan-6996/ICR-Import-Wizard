@@ -9,7 +9,12 @@ const AssignPage = {
   followUpTask: 'Choose follow-up task',
   complianceConfirmed: false,
 
+  _isUpdateOnly() {
+    return ActionsPage.selectedAction === 'update_existing';
+  },
+
   render() {
+    const isUpdate = this._isUpdateOnly();
     const content = document.getElementById('wizardContent');
     content.innerHTML = `
       <div class="assign-section">
@@ -23,6 +28,7 @@ const AssignPage = {
           </div>
         </div>
 
+        ${!isUpdate ? `
         <!-- Manual Record Approval -->
         <div class="assign-group">
           <h3>Manual Record Approval</h3>
@@ -34,6 +40,7 @@ const AssignPage = {
             When enabled, extracted records will appear in the Approve Module View for review before being added to the CRM.
           </p>
         </div>
+        ` : ''}
 
         <!-- Trigger Automation -->
         <div class="assign-group">
@@ -83,9 +90,12 @@ const AssignPage = {
       this.assignmentRules = e.target.checked;
     });
 
-    document.getElementById('manualApprovalCheck').addEventListener('change', (e) => {
-      this.manualApproval = e.target.checked;
-    });
+    const manualApprovalCheck = document.getElementById('manualApprovalCheck');
+    if (manualApprovalCheck) {
+      manualApprovalCheck.addEventListener('change', (e) => {
+        this.manualApproval = e.target.checked;
+      });
+    }
 
     document.getElementById('triggerAutoCheck').addEventListener('change', (e) => {
       this.triggerAutomation = e.target.checked;
@@ -111,6 +121,11 @@ const AssignPage = {
       return;
     }
 
+    if (this._isUpdateOnly()) {
+      this._showUpdateConfirmation();
+      return;
+    }
+
     App.showToast('Import submitted successfully!', 'success');
 
     // If manual approval is enabled, navigate to approval view
@@ -119,6 +134,43 @@ const AssignPage = {
         App.showApprovalView();
       }, 1000);
     }
+  },
+
+  _showUpdateConfirmation() {
+    // Remove existing modal if any
+    const existing = document.getElementById('updateConfirmModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'updateConfirmModal';
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:520px;">
+        <div class="modal-header">
+          <h3>Confirm Import</h3>
+          <button class="modal-close" id="updateModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="line-height:1.6; color:var(--gray-700);">
+            Records will be updated with extracted values and overridden if there is also an existing value.
+            Subform rows extracted will be concatenated to the existing rows. If the limit exceeds, we skip enriching those rows.
+          </p>
+          <p style="margin-top:12px; font-weight:600; color:var(--gray-800);">Are you sure you would like to proceed to import?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="updateModalCancel">Cancel</button>
+          <button class="btn btn-primary" id="updateModalConfirm">Yes, Proceed</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('updateModalClose').addEventListener('click', () => modal.remove());
+    document.getElementById('updateModalCancel').addEventListener('click', () => modal.remove());
+    document.getElementById('updateModalConfirm').addEventListener('click', () => {
+      modal.remove();
+      App.showToast('Import has been initiated. You will be notified on completion as a WMS notification.', 'success');
+    });
   },
 
   validate() {
