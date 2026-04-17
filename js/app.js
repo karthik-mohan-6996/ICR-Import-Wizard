@@ -14,6 +14,14 @@ const App = {
 
   renderCurrentPage() {
     const page = this.pages[this.currentStep];
+    // Restore header/footer visibility when navigating between steps
+    const wizardHeader = document.querySelector('.wizard-header');
+    const progressBar = document.querySelector('.progress-bar-container');
+    const wizardFooter = document.getElementById('wizardFooter');
+    if (wizardHeader) wizardHeader.style.display = '';
+    if (progressBar) progressBar.style.display = '';
+    if (wizardFooter) wizardFooter.style.display = '';
+
     page.render();
     Stepper.setStep(this.currentStep);
     this._updateNavButtons();

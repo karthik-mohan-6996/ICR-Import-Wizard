@@ -64,7 +64,39 @@ const MockData = {
     { id: 'job_title', label: 'Job Title', group: 'subform', prompt: 'Extract job title or designation' },
   ],
 
-  // Sample extracted records for preview
+  // CRM contact field options for association dropdowns
+  contactFieldOptions: [
+    'None', 'Contact Image', 'First Name', 'Last Name', 'Job Title',
+    'Account Number', 'Email', 'Phone', 'Mobile', 'Website', 'Department', 'Fax'
+  ],
+
+  // Single sample extraction for association view
+  sampleExtraction: {
+    id: 1,
+    imageName: 'business_card_001.jpg',
+    cardInfo: {
+      name: 'Philip Wilkerson',
+      role: 'Marketing Director',
+      company: 'Your Company',
+      id: 'ID 1234556',
+      department: 'Marketing Department',
+      email: 'yourmail@companymail.com',
+      phone: '(654) 334-2233',
+      website: 'www.webcompany.com'
+    },
+    fields: [
+      { value: '📷 Photo', field: 'Contact Image', checked: true, isImage: true },
+      { value: 'Philip Wilkerson', field: 'First Name', checked: true, isImage: false },
+      { value: 'Marketing Director', field: 'Job Title', checked: true, isImage: false },
+      { value: 'ID 1234556', field: 'Account Number', checked: true, isImage: false },
+      { value: 'Marketing Department', field: 'None', checked: false, isImage: false },
+      { value: 'yourmail@companymail.com', field: 'None', checked: false, isImage: false },
+      { value: '(654) 334-2233', field: 'None', checked: false, isImage: false },
+      { value: 'www.webcompany.com', field: 'None', checked: false, isImage: false },
+    ]
+  },
+
+  // Sample extracted records for preview (legacy)
   sampleExtractions: [
     {
       id: 1,
@@ -76,18 +108,27 @@ const MockData = {
         { field: 'First Name', value: 'Anthony', checked: true },
         { field: 'Last Name', value: 'D\'Silva', checked: true },
       ]
-    },
-    {
-      id: 2,
-      imageName: 'business_card_002.jpg',
-      cardInfo: { name: 'Sarah Johnson', role: 'Marketing Director', company: 'Apex Digital' },
-      fields: [
-        { field: 'Phone', value: '+1 415 555 0198', checked: true },
-        { field: 'Email', value: 'sarah.j@apexdigital.com', checked: true },
-        { field: 'First Name', value: 'Sarah', checked: true },
-        { field: 'Last Name', value: 'Johnson', checked: true },
-      ]
     }
+  ],
+
+  // Create Contact form layout fields
+  contactFormFields: [
+    { label: 'Last Name', value: 'Philip Wilkerson', type: 'text', required: true, highlighted: true },
+    { label: 'Email 18', value: 'yourmail@companymail.com', type: 'text', required: false, highlighted: false },
+    { label: 'Email', value: 'yourmail@companymail.com', type: 'text', required: true, highlighted: true },
+    { label: 'Test', value: '', type: 'text', required: false, highlighted: false },
+    { label: 'First Name', value: '', type: 'picklist', required: false, highlighted: false },
+    { label: 'User 3', value: '', type: 'picklist', required: false, highlighted: false },
+    { label: 'File Upload 5', value: '', type: 'file', required: false, highlighted: false },
+    { label: 'Single Name', value: '', type: 'file', required: false, highlighted: false },
+    { label: 'Currency', value: '$', type: 'currency', required: false, highlighted: false },
+    { label: 'Currency', value: '$', type: 'currency', required: false, highlighted: false },
+    { label: 'Pick List 4', value: 'None', type: 'picklist', required: false, highlighted: false },
+    { label: 'Pick List 4', value: 'None', type: 'picklist', required: false, highlighted: false },
+    { label: 'Website', value: 'www.webcompany.com', type: 'text', required: false, highlighted: true },
+    { label: 'Website', value: 'www.webcompany.com', type: 'text', required: false, highlighted: true },
+    { label: 'Multi-Line', value: '', type: 'textarea', required: false, highlighted: false },
+    { label: 'Multi-Line', value: '', type: 'textarea', required: false, highlighted: false },
   ],
 
   // Records for approval view
