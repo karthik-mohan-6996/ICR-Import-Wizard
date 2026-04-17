@@ -36,8 +36,7 @@ const CreateContactPage = {
           </div>
           <div class="cc-header-right">
             <button class="btn btn-outline" id="ccCancelBtn">Cancel</button>
-            <button class="btn btn-outline" id="ccSaveNewBtn">Save and New</button>
-            <button class="btn btn-blue" id="ccSaveBtn">Save</button>
+            <button class="btn btn-primary" id="ccSaveAssignBtn">Save Record & Assign</button>
           </div>
         </div>
 
@@ -153,14 +152,9 @@ const CreateContactPage = {
       this._goBackToAssociation();
     });
 
-    // Save → create/update record
-    document.getElementById('ccSaveBtn').addEventListener('click', () => {
-      this._saveRecord();
-    });
-
-    // Save and New
-    document.getElementById('ccSaveNewBtn').addEventListener('click', () => {
-      this._saveRecord(true);
+    // Save Record & Assign → save and navigate to Assign step
+    document.getElementById('ccSaveAssignBtn').addEventListener('click', () => {
+      this._saveAndAssign();
     });
 
     // Edit extraction → go back to association
@@ -169,7 +163,7 @@ const CreateContactPage = {
     });
   },
 
-  _saveRecord(saveAndNew) {
+  _saveAndAssign() {
     const msgEl = document.getElementById('ccInlineMsg');
     const msgText = this.isEnrichment
       ? 'Record updated successfully! Enrichment applied.'
@@ -180,17 +174,22 @@ const CreateContactPage = {
     msgEl.querySelector('span').textContent = msgText;
     msgEl.className = 'cc-inline-msg cc-success';
 
-    // After a brief moment, go back to association view with record marked as created
+    SampleExtractionPage.recordCreated = true;
+
+    // Brief delay to show success, then navigate to Assign step
     setTimeout(() => {
-      if (saveAndNew) {
-        // Reset & stay on create page
-        this.isEnrichment = false;
-        SampleExtractionPage.recordCreated = false;
-        this.render();
-      } else {
-        SampleExtractionPage.onRecordSaved();
-      }
-    }, 1500);
+      // Restore wizard chrome
+      const wizardHeader = document.querySelector('.wizard-header');
+      if (wizardHeader) wizardHeader.style.display = '';
+      const progressBar = document.querySelector('.progress-bar-container');
+      if (progressBar) progressBar.style.display = '';
+      const wizardFooter = document.getElementById('wizardFooter');
+      if (wizardFooter) wizardFooter.style.display = '';
+
+      App.showToast(msgText, 'success');
+      App.currentStep = 4; // Assign step index
+      App.renderCurrentPage();
+    }, 1200);
   },
 
   _goBackToAssociation() {

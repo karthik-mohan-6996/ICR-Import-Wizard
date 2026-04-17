@@ -104,7 +104,8 @@ const SampleExtractionPage = {
         <!-- Footer buttons -->
         <div class="assoc-footer">
           <button class="btn btn-outline" id="assocCancelBtn">Cancel</button>
-          <button class="btn btn-blue" id="assocUpdateBtn">Update</button>
+          <button class="btn btn-outline" id="assocModifyBtn">Modify & Review</button>
+          <button class="btn btn-primary" id="assocSaveAssignBtn">Save Record & Assign</button>
         </div>
       </div>
     `;
@@ -171,12 +172,26 @@ const SampleExtractionPage = {
       });
     }
 
-    // Update → go to Create Contact page
-    const updateBtn = document.getElementById('assocUpdateBtn');
-    if (updateBtn) {
-      updateBtn.addEventListener('click', () => {
+    // Modify & Review → go to Create Contact edit page
+    const modifyBtn = document.getElementById('assocModifyBtn');
+    if (modifyBtn) {
+      modifyBtn.addEventListener('click', () => {
         CreateContactPage.isEnrichment = this.recordCreated;
         CreateContactPage.render();
+      });
+    }
+
+    // Save Record & Assign → save directly and go to Assign step
+    const saveAssignBtn = document.getElementById('assocSaveAssignBtn');
+    if (saveAssignBtn) {
+      saveAssignBtn.addEventListener('click', () => {
+        this.recordCreated = true;
+        App.showToast('Record saved successfully!', 'success');
+        // Restore wizard chrome and navigate to Assign step
+        const wizardFooter = document.getElementById('wizardFooter');
+        if (wizardFooter) wizardFooter.style.display = '';
+        App.currentStep = 4; // Assign step index
+        App.renderCurrentPage();
       });
     }
   },
